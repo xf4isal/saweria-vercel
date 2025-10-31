@@ -1,35 +1,37 @@
 // /api/saweria.js
-let donations = []; // simpan banyak donasi, bukan cuma satu
+let lastDonation = null;
+let donations = [];
 
 export default async function handler(req, res) {
-  console.log("🛰️ Request masuk:", req.method);
+  console.log(`📩 Request ${req.method} diterima`);
 
   if (req.method === "POST") {
-    const donation = req.body || req.query;
-    console.log("🎉 Donasi masuk dari Saweria:", donation);
+    const body = req.body || {};
+    console.log("🎉 Donasi diterima dari Saweria:", body);
 
-    donations.push({
-      id: donation.id || Date.now().toString(),
-      name: donation.donator_name || "Anonymous",
-      amount: donation.amount_raw || 0,
-      time: new Date().toISOString(),
-    });
+    lastDonation = {
+      id: body.id || Date.now().toString(),
+      name: body.donator_name || "Anonymous",
+      amount: body.amount_raw || 0,
+      message: body.message || "",
+      timestamp: new Date().toISOString(),
+    };
 
-    // Batasi maksimal 100 donasi biar gak overload
+    donations.push(lastDonation);
     if (donations.length > 100) donations.shift();
 
-    return res.status(200).json({ success: true, total: donations.length });
+    return res.status(200).json({ success: true });
   }
 
   if (req.method === "GET") {
-    // Roblox ambil daftar donasi
     return res.status(200).json({
-      count: donations.length,
+      status: "ok",
+      total: donations.length,
+      lastDonation,
       donations,
     });
   }
 
-  // Kalau bukan GET/POST
   res.setHeader("Allow", ["GET", "POST"]);
   return res.status(405).json({ message: "Method not allowed" });
 }
