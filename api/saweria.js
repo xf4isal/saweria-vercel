@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     console.log("🎉 Donasi dari Saweria:", data);
 
     // URL ke server Roblox kamu
-    const robloxServer = "https://your-roblox-server-url.com"; // GANTI ke server kamu
+    const robloxServer = "https://odd-snowflake-8fe1.fais2r2r2r157.workers.dev/"; // GANTI ke server kamu
 
     await fetch(robloxServer, {
       method: "POST",
@@ -22,3 +22,4 @@ export default async function handler(req, res) {
     res.status(500).json({ message: "Terjadi kesalahan server." });
   }
 }
+
