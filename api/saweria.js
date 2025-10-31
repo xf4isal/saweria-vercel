@@ -22,12 +22,14 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET") {
+    // Roblox ambil daftar donasi
     return res.status(200).json({
       count: donations.length,
       donations,
     });
   }
 
+  // Kalau bukan GET/POST
   res.setHeader("Allow", ["GET", "POST"]);
   return res.status(405).json({ message: "Method not allowed" });
 }
