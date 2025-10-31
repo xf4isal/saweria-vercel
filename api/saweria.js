@@ -1,25 +1,27 @@
+let lastDonation = null; // simpan donasi terakhir di memori
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Only POST allowed" });
+  // kalau Saweria kirim POST
+  if (req.method === "POST") {
+    try {
+      const data = req.body;
+      console.log("🎉 Donasi dari Saweria:", data);
+      lastDonation = data; // simpan data
+
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
   }
 
-  try {
-    const data = req.body;
-    console.log("🎉 Donasi dari Saweria:", data);
-
-    // URL ke server Roblox kamu
-    const robloxServer = "https://odd-snowflake-8fe1.fais2r2r2r157.workers.dev/"; // GANTI ke server kamu
-
-    await fetch(robloxServer, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    res.status(200).json({ message: "✅ Donasi diterima & dikirim ke Roblox!" });
-  } catch (error) {
-    console.error("❌ Error:", error);
-    res.status(500).json({ message: "Terjadi kesalahan server." });
+  // kalau Roblox minta data GET
+  if (req.method === "GET") {
+    if (lastDonation) {
+      return res.status(200).json(lastDonation);
+    } else {
+      return res.status(200).json({ message: "Belum ada donasi masuk" });
+    }
   }
+
+  return res.status(405).json({ message: "Only GET and POST allowed" });
 }
-
