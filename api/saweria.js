@@ -1,9 +1,15 @@
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
 let latestDonation = null;
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    // Webhook dari Saweria
     const body = req.body;
+
     console.log("Webhook Saweria diterima:", body);
 
     latestDonation = {
@@ -17,10 +23,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ message: "Donasi diterima", latestDonation });
   } 
   else if (req.method === "GET") {
-    // Endpoint yang diakses Roblox
     return res.status(200).json({ latestDonation });
   } 
   else {
-    res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 }
